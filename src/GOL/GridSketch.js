@@ -18,7 +18,7 @@ function sketch (p){
   const rows = GridConstants.num_rows;
   let parentW = document.querySelector(".sketch-container").clientWidth;
   let parentH = document.querySelector(".sketch-container").clientHeight;
-  let currGrid = [[]], nextGrid = [[]]
+  let currGrid = [[]];
   let cellFill = "#cc527a", textFill = "#D11554", textStroke="#e8175d";
   // textStroke2 = rgba(232, 23, 93, 0.4);
   let isBlasting = false, goForClear = 0;
@@ -33,7 +33,6 @@ function sketch (p){
           currGrid[i][j] = new Cell(p, i, j, cellFill);
         }
     }
-    nextGrid = currGrid;
   };
 
   const stirChaos = () => {
@@ -84,6 +83,7 @@ function sketch (p){
     for(let i=0; i<cols; i++){
       for(let j=0; j<rows; j++){
         currGrid[i][j].setGeneration(generations);
+        currGrid[i][j].setPrevActivityToActive();
         currGrid[i][j].createRect();
 
       }
@@ -129,37 +129,32 @@ function sketch (p){
     for(let i=1; i<cols-1; i++){
       for( let j=1; j<rows-1; j++){
         let theLoving = 0;
-        if(currGrid[i-1][j-1].getActivity() == true){theLoving++;}
-        if(currGrid[i-1][j+1].getActivity() == true){theLoving++;}
-        if(currGrid[i-1][j].getActivity() == true){theLoving++;}
-        if(currGrid[i+1][j-1].getActivity() == true){theLoving++;}
-        if(currGrid[i+1][j].getActivity() == true){theLoving++;}
-        if(currGrid[i+1][j+1].getActivity() == true){theLoving++;}
-        if(currGrid[i][j-1].getActivity() == true){theLoving++;}
-        if(currGrid[i][j+1].getActivity() == true){theLoving++;}
+        if(currGrid[i-1][j-1].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i-1][j+1].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i-1][j  ].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i+1][j-1].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i+1][j  ].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i+1][j+1].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i  ][j-1].getPrevActivity() === true){theLoving++;}
+        if(currGrid[i  ][j+1].getPrevActivity() === true){theLoving++;}
+
+
         if(theLoving > 3 || theLoving < 2){
           if(currGrid[i][j].getActivity() == true){
-            nextGrid[i][j].setActiveToFalse();
+            currGrid[i][j].setActiveToFalse();
           }
         } else if (theLoving == 3) {
           if(currGrid[i][j].getActivity() == false){
-            nextGrid[i][j].setActiveToTrue();
+            currGrid[i][j].setActiveToTrue();
           }
         } else {
-          nextGrid[i][j].setActivity(currGrid[i][j].getActivity());
+          currGrid[i][j].setActivity(currGrid[i][j].getActivity());
         }
       }
     }
 
-    swapJudgement();
     incrementGenerations();
   };
-
-  const swapJudgement = () => {
-    let temp = currGrid;
-    currGrid = nextGrid;
-    nextGrid = temp;
-  }
 
   const incrementGenerations = () => {
     generations += 1;

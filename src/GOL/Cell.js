@@ -14,6 +14,7 @@ dark matte pink: #b74366, a83c5e
 class Cell {
 
   constructor(p, i, j){
+    this.prevActive = false;
     this.active = false;
     this.id = null;
     this.x = i;
@@ -26,6 +27,14 @@ class Cell {
     this.generation = 0;
     this.centaFill = "#F1FFC0";
     this.hoverFill = "#363636";
+  }
+
+  getPrevActivity = () => {
+    return this.prevActive;
+  }
+
+  setPrevActivityToActive = () => {
+    this.prevActive = this.active;
   }
 
   getActivity = () => {
